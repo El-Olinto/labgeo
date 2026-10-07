@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f3f0e7">
+
+<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/images/favicon-48x48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<title>GeoLab — Brasil: Terra, Poder e Mundo</title>
+<meta name="description" content="Livro digital vivo de Geografia para INFO2V: terra, poder, urbanização, economia, geopolítica e clima.">
+<style>
+:root{
+ --bg:#efede5; --paper:#fbfaf5; --paper2:#f5f2e9; --ink:#2a1f26; --muted:#716b68;
+ --green:#486c37; --green2:#7d9b57; --lime:#dce9aa; --moss:#dfe7d1;
+ --brown:#4a323d; --rose:#eadbd8; --gold:#eadfa9; --blue:#dae8e9; --purple:#e7e1ed;
+ --line:#d8d1c5; --shadow:0 16px 42px rgba(55,39,47,.09); --shadow2:0 6px 20px rgba(55,39,47,.07);
+ --reading:72ch; --radius:26px;
+}
+[data-theme="dark"]{
+ --bg:#151615; --paper:#1e211e; --paper2:#252924; --ink:#f5f2e9; --muted:#b9b4ac;
+ --green:#a7c97b; --green2:#7ca061; --lime:#31402a; --moss:#283429;
+ --brown:#ead9e2; --rose:#402f33; --gold:#443c26; --blue:#293a3d; --purple:#342f42;
+ --line:#3a3f39; --shadow:0 18px 48px rgba(0,0,0,.24); --shadow2:0 8px 24px rgba(0,0,0,.2);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.68 Inter, ui-sans-serif, system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}
+button{color:inherit}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--lime);color:var(--ink)}
+.app{min-height:100vh}
+.topbar{
+ position:sticky;top:0;z-index:60;height:60px;background:color-mix(in srgb,var(--paper) 88%, transparent);
+ backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center
+}
+.topbar .inner{width:100%;display:flex;align-items:center;gap:12px;padding:0 16px}
+.logo{font-weight:950;letter-spacing:-.05em;color:var(--brown);font-size:1.25rem}
+.logo em{font-style:normal;color:var(--green)}
+.viewtabs{display:flex;gap:6px;margin-left:14px}
+.viewbtn,.iconbtn{
+ border:1px solid transparent;background:transparent;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:750
+}
+.viewbtn.active{background:var(--brown);color:var(--paper)}
+.iconbtn{border-color:var(--line);background:var(--paper)}
+.topgrow{flex:1}
+.topprogress{display:flex;align-items:center;gap:8px;min-width:150px;max-width:270px}
+.topprogress .track{height:8px;background:var(--line);border-radius:999px;overflow:hidden;flex:1}
+.topprogress .track span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:999px;transition:.3s}
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr) 250px;min-height:calc(100vh - 60px)}
+.sidebar,.rail{position:sticky;top:60px;height:calc(100vh - 60px);overflow:auto;padding:22px 16px}
+.sidebar{border-right:1px solid var(--line);background:color-mix(in srgb,var(--paper2) 82%,transparent)}
+.rail{border-left:1px solid var(--line);background:color-mix(in srgb,var(--paper2) 70%,transparent)}
+.main{min-width:0}
+.side-title{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:900;margin:6px 8px 12px}
+.toc{display:grid;gap:4px}
+.toc button{
+ border:0;background:transparent;text-align:left;padding:10px;border-radius:14px;cursor:pointer;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start
+}
+.toc button:hover{background:var(--paper)}
+.toc button.active{background:var(--paper);box-shadow:var(--shadow2)}
+.toc .num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--moss);font-weight:900;color:var(--green);font-size:.78rem}
+.toc .title{font-weight:800;line-height:1.15}
+.toc small{display:block;color:var(--muted);margin-top:4px;line-height:1.25}
+.statusdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--line);margin-right:6px}
+.statusdot.read{background:#d2a645}.statusdot.practice{background:#8ea54e}.statusdot.mastered{background:#4a7b58}.statusdot.review{background:#bb665d}
+.railcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow2)}
+.railcard h4{margin:0 0 7px;font-size:.88rem;color:var(--brown)}
+.railcard p{margin:0;color:var(--muted);font-size:.86rem}
+.railcard button{margin-top:10px;width:100%;border:1px solid var(--line);background:var(--paper2);border-radius:12px;padding:8px;cursor:pointer;font-weight:800}
+.hero{
+ min-height:76vh;display:grid;align-items:center;padding:72px clamp(22px,6vw,80px);
+ background:
+ radial-gradient(circle at 85% 20%,rgba(255,255,255,.25) 0 2px,transparent 3px 18px),
+ radial-gradient(circle at 16% 72%,rgba(255,255,255,.18) 0 2px,transparent 3px 16px),
+ linear-gradient(155deg,#779957 0%,#57793d 48%,#3e642f 100%);
+ color:#fffdf5;position:relative;overflow:hidden
+}
+.hero:after{
+ content:"";position:absolute;inset:15% -15% auto -10%;height:300px;border-radius:50%;
+ background:radial-gradient(ellipse at center,rgba(255,255,255,.13),transparent 66%);transform:rotate(-8deg)
+}
+.hero .content{position:relative;z-index:2;max-width:980px}
+.hero .kicker{display:inline-block;background:#fffaf0;color:#32242b;border-radius:999px;padding:8px 13px;font-weight:850}
+.hero h1{font-size:clamp(3.2rem,8.5vw,7.2rem);line-height:.9;letter-spacing:-.075em;margin:18px 0 18px;max-width:900px}
+.hero .lead{font-size:clamp(1.08rem,2vw,1.35rem);max-width:66ch;color:rgba(255,253,245,.92)}
+.hero .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:11px 16px;border-radius:999px;font-weight:850;cursor:pointer}
+.btn.dark{background:var(--brown);color:var(--paper);border-color:var(--brown)}
+.btn.green{background:var(--green);color:white;border-color:var(--green)}
+.book{padding:56px clamp(18px,5vw,72px) 110px}
+.chapter{display:none;max-width:1120px;margin:auto}.chapter.active{display:block}
+.chapter-head{max-width:var(--reading);margin:0 auto 34px}
+.eyebrow{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:950}
+.chapter h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.35rem,5vw,4.6rem);line-height:1.02;letter-spacing:-.045em;margin:.25rem 0 1rem;color:var(--brown)}
+.chapter-head .deck{font-size:1.18rem;color:var(--muted);max-width:62ch}
+.breadcrumb{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:.84rem;margin-bottom:18px;flex-wrap:wrap}
+.breadcrumb span+span:before{content:"→";margin-right:8px}
+.reading{max-width:var(--reading);margin:0 auto}
+.reading p{font-size:1.045rem;margin:0 0 1.25em}
+.reading h3{font-family:Georgia,"Times New Roman",serif;font-size:2rem;line-height:1.15;margin:2.3em 0 .65em;color:var(--brown)}
+.reading h4{font-size:1.12rem;margin:1.8em 0 .55em;color:var(--green)}
+.dropcap:first-letter{float:left;font-family:Georgia,serif;font-size:4.5rem;line-height:.78;padding:.08em .1em 0 0;color:var(--green)}
+.sectionmark{margin:44px auto 22px;max-width:var(--reading);display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:850}
+.sectionmark:before,.sectionmark:after{content:"";height:1px;background:var(--line);flex:1}
+.callout{
+ margin:26px 0;border-radius:20px;padding:19px 20px;background:var(--moss);border:1px solid color-mix(in srgb,var(--green) 25%,var(--line))
+}
+.callout .label{font-size:.73rem;text-transform:uppercase;letter-spacing:.11em;font-weight:950;color:var(--green);margin-bottom:7px}
+.callout.think{background:var(--gold)}.callout.error{background:var(--rose)}.callout.connect{background:var(--purple)}.callout.alt{background:var(--blue)}
+.callout p:last-child{margin-bottom:0}
+.revealbtn{border:0;background:var(--brown);color:var(--paper);border-radius:999px;padding:9px 13px;font-weight:850;cursor:pointer;margin-top:7px}
+.revealed{display:none;margin-top:13px;background:color-mix(in srgb,var(--paper) 70%,transparent);border:1px dashed var(--line);border-radius:14px;padding:13px}
+.revealed.show{display:block}
+.details{border:1px solid var(--line);border-radius:18px;background:var(--paper2);margin:18px 0;overflow:hidden}
+.details summary{cursor:pointer;padding:15px 17px;font-weight:900;color:var(--brown)}
+.details .inside{padding:0 17px 17px}
+.figure{
+ margin:28px auto;max-width:940px;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow2)
+}
+.figure figcaption{font-size:.82rem;color:var(--muted);margin-top:11px}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.stat{background:var(--paper2);border:1px solid var(--line);border-radius:18px;padding:16px}
+.stat .big{font-size:2.4rem;font-weight:950;letter-spacing:-.05em;color:var(--green)}
+.timeline{margin:20px 0;display:grid;gap:12px}
+.trow{display:grid;grid-template-columns:90px 1fr;gap:14px}
+.trow time{font-weight:950;color:var(--green)}
+.trow .body{border-left:2px solid var(--line);padding:0 0 16px 16px}
+.quiz{margin:30px 0;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow2)}
+.quiz .qtitle{font-weight:950;color:var(--brown);margin-bottom:6px}
+.option{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--paper2);border-radius:14px;padding:11px 13px;margin:8px 0;cursor:pointer}
+.option:hover{border-color:var(--green)}
+.option.correct{background:var(--moss);border-color:var(--green)}
+.option.wrong{background:var(--rose);border-color:#b06d64}
+.feedback{margin-top:11px;font-size:.94rem;color:var(--muted)}
+.hint{display:none;margin-top:9px;padding:10px;border-left:3px solid var(--green);background:var(--paper2);border-radius:0 12px 12px 0}
+.labcard{max-width:980px;margin:28px auto;border-radius:26px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);padding:22px}
+.labhead{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:18px}
+.labhead h3{font-family:Georgia,serif;font-size:2rem;margin:0;color:var(--brown)}
+.control{margin:16px 0}.control label{display:block;font-weight:850;margin-bottom:8px}
+input[type=range]{width:100%;accent-color:var(--green)}
+.metricgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric{background:var(--paper2);border-radius:16px;padding:13px;text-align:center}
+.metric b{display:block;font-size:1.5rem;color:var(--green)}
+.landgrid{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;margin:18px 0}
+.landgrid span{aspect-ratio:1;border-radius:3px;background:var(--line)}.landgrid span.on{background:var(--green)}
+.chartbars{display:grid;gap:8px}
+.chartrow{display:grid;grid-template-columns:140px 1fr 56px;gap:10px;align-items:center;font-size:.9rem}
+.bartrack{height:14px;border-radius:999px;background:var(--line);overflow:hidden}.barfill{height:100%;background:var(--green);border-radius:999px}
+.note-tools{display:flex;gap:8px;flex-wrap:wrap;margin:20px auto;max-width:var(--reading)}
+.note-tools button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 11px;cursor:pointer;font-weight:800}
+.chapter-footer{max-width:var(--reading);margin:50px auto 0;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.masterbtn{background:var(--green);color:white;border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer}
+.labview,.notebookview,.libraryview{display:none;padding:38px clamp(18px,4vw,52px) 100px}
+.labview.active,.notebookview.active,.libraryview.active{display:block}
+.library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1050px;margin:auto}
+.libcard{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow2);cursor:pointer}
+.libcard h3{margin:.2rem 0 .4rem;color:var(--brown);font-family:Georgia,serif;font-size:1.5rem}
+.libcard p{color:var(--muted);font-size:.93rem}
+.notebook-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;max-width:1050px;margin:auto}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow2)}
+textarea{width:100%;min-height:260px;resize:vertical;border:1px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:16px;padding:14px;outline:none}
+.saved-list{display:grid;gap:9px}.saved-item{background:var(--paper2);border:1px solid var(--line);border-radius:14px;padding:11px}
+.mobilebar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px}
+.mobilebar .row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.mobilebar button{border:0;background:transparent;border-radius:12px;padding:8px 4px;font-size:.76rem;font-weight:850}
+.mobilebar button.active{background:var(--moss);color:var(--green)}
+.mobiletoc{display:none;position:fixed;inset:60px 0 58px 0;z-index:75;background:var(--paper);overflow:auto;padding:18px}
+.focus .sidebar,.focus .rail,.focus .topbar{display:none}.focus .layout{grid-template-columns:1fr}.focus .book{padding-top:40px}
+@media(max-width:1120px){.layout{grid-template-columns:250px minmax(0,1fr)}.rail{display:none}}
+@media(max-width:820px){
+ .layout{display:block}.sidebar{display:none}.topbar .viewtabs{display:none}.topprogress{display:none}
+ .book{padding:34px 18px 92px}.hero{min-height:68vh;padding:70px 24px}.hero h1{font-size:clamp(3.1rem,17vw,6.2rem)}
+ .twocol,.metricgrid,.library-grid,.notebook-grid{grid-template-columns:1fr}
+ .mobilebar{display:block}.chapter h2{font-size:2.55rem}.reading p{font-size:1.01rem}
+ .trow{grid-template-columns:70px 1fr}.chartrow{grid-template-columns:100px 1fr 46px}
+ .mobiletoc.show{display:block}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+.mediahub{display:none;padding:38px clamp(18px,4vw,52px) 100px}
+.mediahub.active{display:block}
+.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1080px;margin:auto}
+.media-card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.media-card h3{font-family:Georgia,serif;color:var(--brown);font-size:1.7rem;margin:.3rem 0 .5rem}
+.media-card p{color:var(--muted)}
+.media-card audio,.media-card video{width:100%;display:block;border-radius:16px;background:#111}
+.media-meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.media-chip{font-size:.78rem;font-weight:850;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:var(--paper2)}
+.media-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.media-actions a,.media-actions button{border:1px solid var(--line);background:var(--paper2);border-radius:999px;padding:9px 12px;font-weight:850;cursor:pointer}
+.support-card{margin:28px 0;border:1px solid var(--line);background:linear-gradient(135deg,var(--paper2),var(--moss));border-radius:22px;padding:18px}
+.support-card .support-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.support-card .support-title{font-weight:950;color:var(--brown);font-size:1.05rem}
+.support-card p{margin:.45rem 0 0;color:var(--muted)}
+.support-card button{border:0;background:var(--brown);color:var(--paper);border-radius:999px;padding:9px 12px;font-weight:850;cursor:pointer}
+@media(max-width:820px){
+ .media-grid{grid-template-columns:1fr}
+ .mediahub{padding:28px 14px 92px}
+ .mobilebar .row{grid-template-columns:repeat(5,1fr)}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+ <div class="inner">
+   <div class="logo">geo<em>*</em>lab</div>
+   <div class="viewtabs">
+     <button class="viewbtn active" data-view="read">Leitura</button>
+     <button class="viewbtn" data-view="library">Biblioteca</button>
+     <button class="viewbtn" data-view="lab">Laboratório</button>
+     <button class="viewbtn" data-view="media">Materiais</button>
+     <button class="viewbtn" data-view="notebook">Caderno</button>
+   </div>
+   <div class="topgrow"></div>
+   <div class="topprogress"><div class="track"><span id="topProg"></span></div><small id="topProgText">0%</small></div>
+   <button class="iconbtn" id="focusBtn">Foco</button>
+   <button class="iconbtn" id="themeBtn">◐</button>
+ </div>
+</header>
+
+<div class="layout" id="readView">
+ <aside class="sidebar">
+  <div class="side-title">Sumário vivo</div>
+  <nav class="toc" id="toc"></nav>
+ </aside>
+
+ <main class="main">
+  <section class="hero" id="hero">
+   <div class="content">
+    <span class="kicker">INFO2V • livro digital vivo</span>
+    <h1>Brasil:<br>terra, poder<br>e mundo.</h1>
+    <p class="lead">Uma obra guiada para compreender como a distribuição da terra atravessa urbanização, economia, comércio exterior, disputa entre potências e mudanças climáticas.</p>
+    <div class="actions">
+      <button class="btn dark" onclick="openChapter(1)">começar pela terra</button>
+      <button class="btn" onclick="showView('library')">ver biblioteca</button>
+      <button class="btn" onclick="showView('media')">materiais de apoio</button>
+    </div>
+   </div>
+  </section>
+
+  <div class="book" id="book"></div>
+ </main>
+
+ <aside class="rail">
+   <div class="side-title">Contexto</div>
+   <div class="railcard"><h4>Onde você está</h4><p id="whereText">Introdução</p></div>
+   <div class="railcard"><h4>Status do capítulo</h4><p id="statusText">Ainda não iniciado.</p><button id="statusCycle">Atualizar status</button></div>
+   <div class="railcard"><h4>Pré-requisito</h4><p id="prereqText">Nenhum. Este é o início da trilha.</p><button id="prereqBtn">Revisar rapidamente</button></div>
+   <div class="railcard"><h4>Próxima conexão</h4><p id="nextText">Da distribuição da terra para a reforma agrária.</p></div>
+   <div class="railcard"><h4>Salvar no caderno</h4><p>Guarde uma ideia ou dúvida do capítulo atual.</p><button onclick="quickNote()">Anotar agora</button></div>
+ </aside>
+</div>
+
+<section class="libraryview" id="libraryView">
+ <div style="max-width:1050px;margin:0 auto 24px">
+  <div class="eyebrow">Biblioteca</div><h2 style="font-family:Georgia,serif;font-size:3rem;margin:.2rem 0">O conhecimento inteiro, organizado.</h2>
+  <p style="color:var(--muted)">Entre por tema, veja o que já estudou e retome de onde parou.</p>
+ </div>
+ <div class="library-grid" id="libraryGrid"></div>
+</section>
+
+<section class="labview" id="labView">
+ <div style="max-width:1050px;margin:0 auto 28px">
+  <div class="eyebrow">Laboratório</div><h2 style="font-family:Georgia,serif;font-size:3rem;margin:.2rem 0">Mexa nas variáveis. Veja o conceito acontecer.</h2>
+  <p style="color:var(--muted)">Experimentos não substituem a teoria. Eles fazem a teoria ficar visível.</p>
+ </div>
+ <div id="labs"></div>
+</section>
+
+
+<section class="mediahub" id="mediaView">
+ <div style="max-width:1080px;margin:0 auto 26px">
+   <div class="eyebrow">Materiais de apoio</div>
+   <h2 style="font-family:Georgia,serif;font-size:3rem;margin:.2rem 0">Ouça, assista e volte para a leitura.</h2>
+   <p style="color:var(--muted);max-width:70ch">Dois materiais complementares integrados ao livro. Use o debate para confrontar argumentos e a videoaula para revisar a visão geral do conteúdo.</p>
+ </div>
+ <div class="media-grid">
+   <article class="media-card">
+     <div class="eyebrow">Podcast · debate</div>
+     <h3>Concentração fundiária e agronegócio no Brasil</h3>
+     <p>Debate em áudio sobre concentração da terra e sua relação com o agronegócio. Combina especialmente com os capítulos 1, 2, 4 e 5.</p>
+     <div class="media-meta"><span class="media-chip">≈ 17 min 33 s</span><span class="media-chip">áudio</span><span class="media-chip">debate</span></div>
+     <audio controls preload="metadata" aria-label="Podcast: Concentração fundiária e agronegócio no Brasil">
+       <source src="assets/media/debate-concentracao-fundiaria-agronegocio.mp3" type="audio/mpeg">
+       Seu navegador não suporta reprodução de áudio.
+     </audio>
+     <div class="media-actions">
+       <button onclick="openChapter(1)">revisar estrutura fundiária</button>
+       <a href="assets/media/debate-concentracao-fundiaria-agronegocio.mp3" download>baixar áudio</a>
+     </div>
+   </article>
+
+   <article class="media-card">
+     <div class="eyebrow">Videoaula</div>
+     <h3>Brasil: Terra, Poder e Mundo</h3>
+     <p>Videoaula panorâmica para revisar a narrativa do curso: terra, poder, economia, inserção internacional e conexões entre os temas.</p>
+     <div class="media-meta"><span class="media-chip">≈ 9 min 26 s</span><span class="media-chip">vídeo 480p</span><span class="media-chip">revisão geral</span></div>
+     <video controls preload="metadata" poster="assets/media/videoaula-poster.jpg" playsinline aria-label="Videoaula Brasil: Terra, Poder e Mundo">
+       <source src="assets/media/videoaula-brasil-terra-poder-mundo.mp4" type="video/mp4">
+       Seu navegador não suporta reprodução de vídeo.
+     </video>
+     <div class="media-actions">
+       <button onclick="openChapter(8)">ir para a síntese</button>
+       <a href="assets/media/videoaula-brasil-terra-poder-mundo.mp4" download>baixar videoaula</a>
+     </div>
+   </article>
+ </div>
+ <div style="max-width:1080px;margin:18px auto 0" class="panel">
+   <h3 style="margin-top:0">Como usar sem estudar passivamente</h3>
+   <p style="color:var(--muted)">Antes de dar play, escolha uma pergunta. Durante o material, procure evidências para respondê-la. Ao terminar, escreva no Caderno três ideias que você conseguiria explicar sem olhar. Isso transforma áudio e vídeo em recuperação ativa, em vez de apenas consumo.</p>
+   <div class="media-actions"><button onclick="showView('notebook')">abrir o Caderno</button><button onclick="showView('library')">voltar à Biblioteca</button></div>
+ </div>
+</section>
+
+<section class="notebookview" id="notebookView">
+ <div style="max-width:1050px;margin:0 auto 26px">
+   <div class="eyebrow">Caderno</div><h2 style="font-family:Georgia,serif;font-size:3rem;margin:.2rem 0">Seu pensamento também faz parte do livro.</h2>
+   <p style="color:var(--muted)">Anotações, ideias salvas, erros e assuntos para revisar ficam aqui.</p>
+ </div>
+ <div class="notebook-grid">
+  <div class="panel"><h3>Anotações livres</h3><textarea id="notes" placeholder="Escreva com suas palavras. Tente explicar, não só copiar..."></textarea><button class="btn green" onclick="saveNotes()">Salvar caderno</button></div>
+  <div>
+    <div class="panel"><h3>Para revisar</h3><div class="saved-list" id="reviewList"></div></div>
+    <div class="panel" style="margin-top:18px"><h3>Erros que me ensinaram</h3><div class="saved-list" id="errorList"></div></div>
+  </div>
+ </div>
+</section>
+
+<div class="mobiletoc" id="mobileToc">
+ <div class="side-title">Sumário vivo</div><nav class="toc" id="mobileTocNav"></nav>
+</div>
+
+<nav class="mobilebar">
+ <div class="row">
+  <button data-mview="read" class="active">Leitura</button>
+  <button data-mview="library">Biblioteca</button>
+  <button data-mview="lab">Lab</button>
+  <button data-mview="media">Materiais</button>
+  <button data-mview="notebook">Caderno</button>
+ </div>
+</nav>
+</div>
+
+<script>
+const chapters = [
+{ id:1, title:"Estrutura fundiária", short:"Quem tem a terra — e por quê?", prereq:"Nenhum. Aqui começa a engrenagem.", next:"A concentração cria a pergunta: o Estado deve redistribuir?", content: `
+<div class="chapter-head">
+ <div class="breadcrumb"><span>Parte I · A terra</span><span>Capítulo 1</span></div>
+ <div class="eyebrow">Provocar → construir → formalizar</div>
+ <h2>Estrutura fundiária: quem tem a terra, e por quê</h2>
+ <p class="deck">Antes de falar de reforma agrária, agronegócio ou êxodo rural, precisamos responder uma pergunta aparentemente simples: como a terra rural está distribuída?</p>
+</div>
+<div class="reading">
+ <p class="dropcap">Imagine um território com 100 hectares e 100 estabelecimentos. A quantidade total de terra é fixa. Agora mude apenas a distribuição: em um cenário todos possuem áreas parecidas; em outro, um grupo minúsculo controla quase metade. O território não mudou. A estrutura, sim.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Se 1% dos estabelecimentos ocupa quase metade da área, o que você esperaria encontrar na outra ponta: propriedades numerosas e pequenas, ou poucas propriedades médias?</p><button class="revealbtn" onclick="reveal(this)">Ver depois de pensar</button><div class="revealed">Você esperaria muitos estabelecimentos menores dividindo uma parcela bem menor da área total. É exatamente por isso que olhar apenas a quantidade de imóveis engana.</div></div>
+ <h3>1.1 O conceito que organiza todo o resto</h3>
+ <p><b>Estrutura fundiária</b> é a forma como posse e propriedade da terra rural se distribuem: quantos imóveis existem, de que tamanho, quem os detém e para que são usados. Quando poucos detêm grande parcela da área, falamos em <b>concentração fundiária</b>.</p>
+ <p>Repare no detalhe: a pergunta não é “o Brasil tem muita terra?”. A pergunta é “como a terra disponível está repartida?”. Um país enorme pode ter distribuição relativamente equilibrada; um país menor pode ser muito concentrado.</p>
+ <div class="callout error"><div class="label">Erro comum</div><p>“O Brasil tem latifúndios porque é muito grande.” O tamanho físico do país não explica a distribuição da propriedade. Para isso, precisamos de história, instituições e escolhas políticas.</p></div>
+ <h3>1.2 Vocabulário que faz sentido</h3>
+ <h4>Latifúndio e minifúndio</h4>
+ <p>São extremos de escala. No debate histórico, o latifúndio é a grande propriedade, muitas vezes associada à concentração e, em certos contextos, ao baixo aproveitamento. O minifúndio é pequeno a ponto de poder dificultar a sustentação econômica de uma família.</p>
+ <h4>Módulo fiscal</h4>
+ <p>Dizer “200 hectares” parece preciso, mas pode enganar. A mesma área tem possibilidades muito diferentes no semiárido, numa região irrigada ou perto de um grande mercado consumidor. Por isso existe o <b>módulo fiscal</b>, uma unidade que varia por município e ajuda a comparar propriedades considerando condições locais.</p>
+ <div class="callout"><div class="label">Formalização</div><p>Pela Lei nº 8.629/1993, a pequena propriedade vai de 1 a 4 módulos fiscais, a média de mais de 4 a 15, e a grande de mais de 15 módulos.</p></div>
+ <h4>Função social da propriedade</h4>
+ <p>A Constituição de 1988 não trata propriedade rural apenas como “é minha e pronto”. A propriedade deve cumprir função social: aproveitamento racional e adequado, uso responsável dos recursos naturais, respeito às relações de trabalho e promoção de bem-estar. Guarde isso: será a chave do capítulo seguinte.</p>
+ <h3>1.3 Como essa estrutura foi construída</h3>
+ <div class="timeline">
+  <div class="trow"><time>1530–34</time><div class="body"><b>Capitanias e sesmarias.</b> Grandes concessões ligaram ocupação territorial a recursos, prestígio e capacidade de produzir.</div></div>
+  <div class="trow"><time>1822</time><div class="body"><b>Fim das sesmarias.</b> Abre-se um período de ocupações e posses sem um regime equivalente.</div></div>
+  <div class="trow"><time>1850</time><div class="body"><b>Lei de Terras.</b> A compra torna-se via central para adquirir terras públicas. No mesmo ano, o tráfico transatlântico de escravizados é proibido.</div></div>
+  <div class="trow"><time>1888</time><div class="body"><b>Abolição.</b> Liberdade jurídica não significou acesso automático à terra ou patrimônio para libertos e trabalhadores pobres.</div></div>
+ </div>
+ <div class="callout connect"><div class="label">Conexão histórica</div><p>Terra cara + trabalhador sem capital = liberdade jurídica sem igualdade econômica de acesso. Essa diferença ajuda a entender por que o problema fundiário sobrevive a mudanças de regime político.</p></div>
+ <details class="details"><summary>Quero entender melhor: a Lei de Terras “causou” sozinha a concentração?</summary><div class="inside"><p>Não. Ela é uma peça importante de uma estrutura que já vinha sendo construída desde o período colonial. O ponto é que ela consolidou uma lógica de acesso pela compra num país profundamente desigual. Pensar em “uma única causa” empobrece a análise.</p></div></details>
+ 
+<div class="support-card">
+ <div class="support-top"><div><div class="eyebrow">Material de apoio</div><div class="support-title">Ouça o debate: concentração fundiária e agronegócio</div></div><button onclick="showView('media')">abrir podcast</button></div>
+ <p>Bom momento para ouvir: você já tem vocabulário suficiente para comparar os argumentos do debate com estrutura fundiária, função social e concentração.</p>
+</div>
+<h3>1.4 O retrato recente trabalhado na apostila</h3>
+ <div class="twocol">
+  <div class="stat"><div class="big">≈5,1 mi</div><b>estabelecimentos agropecuários</b><p>no Censo Agropecuário 2017</p></div>
+  <div class="stat"><div class="big">≈350 mi ha</div><b>área ocupada</b><p>por esses estabelecimentos</p></div>
+ </div>
+ <p>O dado-âncora é poderoso: estabelecimentos de <b>1.000 hectares ou mais</b> eram cerca de <b>1% do total</b>, mas ocupavam <b>47,6% da área</b>. Já os menores de 100 ha, muito mais numerosos, ocupavam cerca de 20%.</p>
+ <div class="callout alt"><div class="label">Outra forma de enxergar</div><p>É como uma turma em que um aluno fica com quase metade de todo o material disponível, enquanto a imensa maioria divide o restante. O problema não é a quantidade total; é a distribuição.</p></div>
+ <h3>1.5 Curva de Lorenz e índice de Gini</h3>
+ <p>Se ordenarmos imóveis do menor para o maior e perguntarmos “os X% menores controlam quanto da área?”, podemos desenhar a <b>curva de Lorenz</b>. Em igualdade perfeita, 20% dos imóveis teriam 20% da área, 50% teriam 50% etc. A curva real fica abaixo dessa diagonal.</p>
+ <p>O <b>Gini</b> resume essa distância em um número entre 0 e 1. Quanto mais próximo de 0, mais igualdade; quanto mais próximo de 1, maior concentração.</p>
+ <details class="details"><summary>Por que isso funciona?</summary><div class="inside"><p>O Gini compara a área entre a linha da igualdade e a curva real com a área total abaixo da linha de igualdade. Ele transforma uma distribuição inteira em um único indicador. Isso é útil para comparar situações, mas não substitui olhar os dados detalhados.</p></div></details>
+ <div class="callout error"><div class="label">Erro comum</div><p>Gini alto não significa “propriedades grandes”; significa <b>propriedades muito desiguais entre si</b>. Um lugar só com fazendas enormes, todas de tamanho parecido, poderia ter Gini baixo.</p></div>
+ <h3>1.6 Eficiência, equidade e sustentabilidade</h3>
+ <p>Grande propriedade pode ganhar escala em máquinas, crédito, logística e exportação. Pequenas propriedades podem gerar mais ocupação por área e abastecer mercados locais. A pergunta madura não é “grande ou pequeno?”. É: <b>eficiência para quê, equidade para quem, sustentabilidade a que custo?</b></p>
+ <div class="quiz" data-id="q1" data-hint="Pense no objeto medido: tamanho absoluto ou desigualdade entre unidades?">
+   <div class="qtitle">Cheque de compreensão</div><p>Um município tem apenas propriedades enormes, mas quase todas com tamanhos semelhantes. O Gini da terra tende a ser...</p>
+   <button class="option" data-correct="false">alto, porque as propriedades são grandes.</button>
+   <button class="option" data-correct="true">mais baixo, porque o Gini mede desigualdade entre os imóveis.</button>
+   <button class="option" data-correct="false">sempre 1, porque não há minifúndios.</button>
+   <div class="hint"></div><div class="feedback"></div>
+ </div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 1 — Estrutura fundiária','Estrutura fundiária = distribuição da posse e propriedade da terra; Gini mede desigualdade, não tamanho absoluto.')">Salvar síntese</button><button onclick="markReview(1,'Revisar estrutura fundiária, módulo fiscal e Gini')">Preciso revisar</button></div>
+`},
+
+{ id:2, title:"Reforma agrária", short:"O que é, o que não é e por que gera disputa", prereq:"Estrutura fundiária, função social e módulo fiscal.", next:"Se o acesso à terra é desigual e o campo se moderniza, quem sai — e para onde?", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte I · A terra</span><span>Capítulo 2</span></div><div class="eyebrow">Do diagnóstico à intervenção</div><h2>Reforma agrária: muito além de “dar terra”</h2><p class="deck">Se a estrutura fundiária é concentrada, a pergunta seguinte aparece quase sozinha: o Estado deve intervir? E, se sim, como?</p></div>
+<div class="reading">
+ <p class="dropcap">Imagine que uma família recebe um lote, mas não tem água, estrada, crédito, assistência técnica, escola próxima ou um mercado capaz de comprar sua produção. Formalmente, ela ganhou acesso à terra. Na prática, ganhou condições para prosperar?</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Qual é a diferença entre <b>distribuir terra</b> e <b>construir capacidade produtiva</b>?</p><button class="revealbtn" onclick="reveal(this)">Explorar resposta</button><div class="revealed">Distribuir terra resolve apenas uma dimensão do problema. Para produzir e permanecer, uma família precisa de crédito, infraestrutura, assistência, serviços e acesso a mercado.</div></div>
+ <h3>2.1 O que a reforma pretende mudar</h3>
+ <p>Reforma agrária é o conjunto de medidas do Estado voltadas a modificar a estrutura fundiária, ampliar o acesso à terra e permitir que as famílias beneficiadas produzam e se estabeleçam. Ela não é apenas uma transferência patrimonial; é uma política de organização territorial, produtiva e social.</p>
+ <div class="callout error"><div class="label">Erro comum</div><p>Reduzir reforma agrária a “dar terra”. Um assentamento sem suporte pode fracassar por falhas de implementação — e isso não prova, por si só, que todo o objetivo da política seja inviável.</p></div>
+ <h3>2.2 Linha do tempo mínima</h3>
+ <div class="timeline">
+  <div class="trow"><time>1850</time><div class="body"><b>Lei de Terras:</b> consolida a compra como forma central de acesso a terras públicas.</div></div>
+  <div class="trow"><time>1950–60</time><div class="body"><b>Ligas Camponesas e reformas de base:</b> a redistribuição da terra ganha força política nacional.</div></div>
+  <div class="trow"><time>1964</time><div class="body"><b>Estatuto da Terra:</b> cria marco legal, define função social e módulos.</div></div>
+  <div class="trow"><time>1970</time><div class="body"><b>INCRA:</b> órgão federal responsável pela política fundiária.</div></div>
+  <div class="trow"><time>1988</time><div class="body"><b>Constituição:</b> disciplina desapropriação por interesse social e função social da propriedade.</div></div>
+  <div class="trow"><time>1993</time><div class="body"><b>Lei 8.629:</b> regulamenta a reforma agrária e classifica propriedades por módulos fiscais.</div></div>
+ </div>
+ <h3>2.3 Como funciona na lógica constitucional</h3>
+ <p>A União pode desapropriar, para fins de reforma agrária, imóvel rural que não cumpra função social. A Constituição protege, em determinadas condições, pequena e média propriedade e propriedade produtiva.</p>
+ <div class="callout"><div class="label">Ahhh, então era isso</div><p><b>Produtiva</b> e <b>cumpre função social</b> não são sinônimos. Uma propriedade pode produzir muito e, ainda assim, descumprir exigências ambientais ou trabalhistas.</p></div>
+ <details class="details"><summary>Quero entender melhor: produtividade resolve todo o debate?</summary><div class="inside"><p>Não. Produtividade é uma dimensão econômica. A função social inclui também critérios ambientais, trabalhistas e de bem-estar. Por isso, avaliar uma propriedade por uma única métrica pode produzir uma conclusão incompleta.</p></div></details>
+ <h3>2.4 O debate em sua forma mais forte</h3>
+ <div class="twocol">
+  <div class="stat"><b>Argumentos favoráveis</b><p>Correção de desigualdade histórica, geração de renda e emprego, fortalecimento da agricultura familiar, cumprimento de instrumentos constitucionais.</p></div>
+  <div class="stat"><b>Críticas recorrentes</b><p>Risco de baixa escala produtiva, custo fiscal, insegurança jurídica e desempenho desigual de assentamentos quando falta suporte.</p></div>
+ </div>
+ <p>Uma análise séria não escolhe lado antes dos dados. Perguntas úteis seriam: qual a renda dos assentados? Qual a produtividade? Que infraestrutura receberam? Quanto custou por família? Como se comparam com famílias rurais semelhantes?</p>
+ <h3>2.5 Reforma agrária ≠ agricultura familiar</h3>
+ <p><b>Agricultura familiar</b> é uma categoria de produtor, definida por critérios de área, mão de obra e renda. <b>Reforma agrária</b> é uma política de acesso à terra. Uma família pode ser agricultora familiar por herança ou compra, sem jamais ter participado de assentamento.</p>
+ <div class="callout connect"><div class="label">Conexão com políticas públicas</div><p>Programas de crédito ou compra pública podem fortalecer agricultores familiares sem redistribuir terra. A política agrícola e a política fundiária se cruzam, mas não são a mesma coisa.</p></div>
+ <div class="quiz" data-id="q2" data-hint="Separe 'tipo de produtor' de 'política de acesso à terra'."><div class="qtitle">Cheque de compreensão</div><p>Qual afirmação está correta?</p>
+ <button class="option" data-correct="false">Todo agricultor familiar é assentado da reforma agrária.</button>
+ <button class="option" data-correct="true">Reforma agrária é uma política; agricultura familiar é uma categoria de produção e organização do trabalho.</button>
+ <button class="option" data-correct="false">Reforma agrária só trata de crédito rural.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 2 — Reforma agrária','Reforma agrária = política de acesso e reorganização fundiária; agricultura familiar = categoria de produtor. Terra sem suporte produtivo não basta.')">Salvar síntese</button><button onclick="markReview(2,'Revisar função social, desapropriação e diferença entre reforma agrária e agricultura familiar')">Preciso revisar</button></div>
+`},
+
+{ id:3, title:"Êxodo rural", short:"Do campo para a cidade — e a modernização conservadora", prereq:"Estrutura fundiária e reforma agrária.", next:"A cidade cresce, mas as desigualdades somem? Entramos em crise x concentração.", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte II · Do campo à cidade</span><span>Capítulo 3</span></div><div class="eyebrow">Migração como processo</div><h2>Êxodo rural e o desenvolvimento do campo brasileiro</h2><p class="deck">O Brasil se urbanizou muito rápido. A pergunta interessante não é apenas “quantas pessoas saíram?”, mas “o que as empurrou — e o que as atraiu?”</p></div>
+<div class="reading">
+ <p class="dropcap">Em 1950, cerca de 36% dos brasileiros viviam em áreas urbanas. Em 1970, aproximadamente 56%. Em 2010, mais de 84%. Em poucas décadas, o país virou majoritariamente urbano.</p>
+ <div class="figure"><div class="chartbars">
+  <div class="chartrow"><span>1950</span><div class="bartrack"><div class="barfill" style="width:36%"></div></div><b>36%</b></div>
+  <div class="chartrow"><span>1970</span><div class="bartrack"><div class="barfill" style="width:56%"></div></div><b>56%</b></div>
+  <div class="chartrow"><span>1980</span><div class="bartrack"><div class="barfill" style="width:68%"></div></div><b>68%</b></div>
+  <div class="chartrow"><span>2000</span><div class="bartrack"><div class="barfill" style="width:81%"></div></div><b>81%</b></div>
+  <div class="chartrow"><span>2010</span><div class="bartrack"><div class="barfill" style="width:84%"></div></div><b>84%</b></div>
+ </div><figcaption>Série aproximada apresentada na apostila, baseada em Censos Demográficos do IBGE.</figcaption></div>
+ <h3>3.1 Empurrar e puxar</h3>
+ <p>Migração raramente tem uma causa única. Os geógrafos trabalham com <b>fatores de expulsão</b> e <b>fatores de atração</b>. Concentração fundiária, mecanização, secas e falta de oportunidade podem empurrar; indústria, emprego, serviços, escola, saúde e redes familiares podem puxar.</p>
+ <div class="callout connect"><div class="label">Conexão</div><p>O êxodo rural não começa no terminal rodoviário. Ele começa na estrutura econômica do campo. Quanto menos terra e trabalho disponíveis para uma família, maior a pressão para sair.</p></div>
+ <h3>3.2 Modernização conservadora</h3>
+ <p>A partir dos anos 1960 e 1970, o campo brasileiro recebeu crédito, máquinas, pesquisa, fertilizantes e sementes melhoradas. A criação da Embrapa em 1973 e a expansão agrícola sobre o Cerrado simbolizam essa transformação.</p>
+ <p>Mas a propriedade da terra não foi democratizada no mesmo ritmo. Daí a expressão <b>modernização conservadora</b>: muda-se profundamente a tecnologia, mas preserva-se grande parte da estrutura de propriedade.</p>
+ <div class="callout"><div class="label">Ahhh, então era isso</div><p>Modernizar e democratizar não são a mesma coisa. É perfeitamente possível aumentar produtividade e, ao mesmo tempo, reduzir a quantidade de trabalhadores necessária por hectare.</p></div>
+ <h3>3.3 Desenvolvimento para quem?</h3>
+ <p>Se a produção de soja de um município dobra, mas a população rural cai pela metade, houve desenvolvimento? A resposta depende do que estamos medindo. Produção e produtividade podem melhorar; renda, serviços, permanência dos jovens e qualidade de vida podem não acompanhar.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Escolha três indicadores para medir desenvolvimento do campo sem usar “toneladas produzidas”.</p><button class="revealbtn" onclick="reveal(this)">Comparar com possibilidades</button><div class="revealed">Renda média rural, escolaridade, acesso a internet, energia, saneamento, trabalho formal, permanência de jovens, mortalidade, acesso à saúde e infraestrutura viária são exemplos possíveis.</div></div>
+ <h3>3.4 O campo atual é plural</h3>
+ <p>O campo reúne agronegócio de grande escala, agricultura familiar e uma ampla faixa de produtores médios. Tratar “o campo” ou “o agro” como blocos homogêneos apaga diferenças de escala, tecnologia, destino da produção e relações de trabalho.</p>
+ <h3>3.5 Novos desafios demográficos</h3>
+ <p>O êxodo seletivo pode deixar população rural mais envelhecida e dificultar sucessão familiar. Quando jovens — especialmente mulheres em certas regiões — encontram menos oportunidades, a continuidade dos estabelecimentos familiares vira um problema.</p>
+ <div class="quiz" data-id="q3" data-hint="Pergunte: 'mudou a tecnologia' e 'mudou a propriedade' na mesma velocidade?"><div class="qtitle">Cheque de compreensão</div><p>“Modernização conservadora” quer dizer...</p>
+ <button class="option" data-correct="false">modernizar a agricultura sem usar máquinas.</button>
+ <button class="option" data-correct="true">modernizar tecnicamente o campo sem transformar de modo equivalente a estrutura da propriedade.</button>
+ <button class="option" data-correct="false">impedir qualquer mudança no campo.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 3 — Êxodo rural','Êxodo rural combina fatores de expulsão e atração. Modernização conservadora = avanço técnico sem mudança equivalente na estrutura fundiária.')">Salvar síntese</button><button onclick="markReview(3,'Revisar fatores de expulsão/atração e modernização conservadora')">Preciso revisar</button></div>
+`},
+
+{ id:4, title:"Crise ou concentração?", short:"Conjuntura e estrutura: duas escalas diferentes", prereq:"Êxodo rural e concentração fundiária.", next:"Agora olhamos para fora: o modelo brasileiro no comércio mundial.", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte II · Do campo à cidade</span><span>Capítulo 4</span></div><div class="eyebrow">Escalas de tempo</div><h2>Crise econômica ou concentração econômica?</h2><p class="deck">O título parece pedir que você escolha um lado. A melhor resposta começa desconfiando dessa armadilha.</p></div>
+<div class="reading">
+ <p class="dropcap">Uma crise econômica pode começar e terminar. Concentração de renda, terra, patrimônio ou poder pode atravessar décadas. Uma é conjuntura; a outra é estrutura. E uma pode tornar a outra mais dura.</p>
+ <div class="twocol"><div class="stat"><div class="big">Crise</div><p>Recessão, desemprego, inflação ou instabilidade. Tem gatilhos e duração mais curta.</p></div><div class="stat"><div class="big">Concentração</div><p>Recursos e poder acumulados em poucas mãos. Persiste no tempo.</p></div></div>
+ <div class="callout alt"><div class="label">Analogia</div><p>Crise é como febre: um episódio agudo. Concentração é como uma condição estrutural do organismo. A febre passa, mas quem já era vulnerável pode sofrer mais.</p></div>
+ <h3>4.1 Crises brasileiras em perspectiva</h3>
+ <p>A apostila passa por episódios como a crise da dívida e inflação nos anos 1980, o combate à hiperinflação com o Plano Real, a recessão de 2014–2016 e o choque da pandemia em 2020. São fenômenos distintos, mas todos têm uma característica: oscilações econômicas não explicam sozinhas desigualdades que já existiam antes deles.</p>
+ <h3>4.2 As muitas concentrações</h3>
+ <p>Podemos falar em concentração de terra, renda, mercados, território e poder político. Uma dimensão pode reforçar outra. Uma região que concentra produção e infraestrutura pode atrair mais investimentos; famílias com patrimônio conseguem resistir melhor a crises e aproveitar recuperações.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Duas famílias perdem 10% da renda. Uma tem casa própria e reserva financeira; a outra paga aluguel e não tem poupança. A perda percentual é igual. O impacto é igual?</p><button class="revealbtn" onclick="reveal(this)">Explorar</button><div class="revealed">Não. Vulnerabilidade depende de patrimônio, reservas, estabilidade do trabalho, gastos fixos e redes de proteção. Por isso uma crise pode ampliar desigualdades preexistentes.</div></div>
+ <h3>4.3 Crescer não é distribuir</h3>
+ <p>Imagine dois grupos de mesmo tamanho com renda 90 e 10. A economia cresce 5%, mas todo o ganho vai para o grupo mais rico: 95 e 10. O PIB sobe; a vida do segundo grupo não muda. Crescimento médio não revela como o ganho foi repartido.</p>
+ <details class="details"><summary>Quero entender melhor: média ou mediana?</summary><div class="inside"><p>A média pode subir muito se uma parcela de renda muito alta crescer. A mediana mostra o valor no meio da distribuição. Em sociedades desiguais, olhar as duas evita conclusões precipitadas.</p></div></details>
+ <h3>4.4 A resposta madura</h3>
+ <p>Crise e concentração existem e atuam em escalas diferentes. A crise explica por que determinado período piorou; a concentração explica por que certas desigualdades permanecem antes, durante e depois do choque.</p>
+ <div class="quiz" data-id="q4" data-hint="Pergunte se o fenômeno tem começo/fim ou atravessa décadas."><div class="qtitle">Cheque de compreensão</div><p>A concentração fundiária brasileira é melhor descrita como...</p>
+ <button class="option" data-correct="true">um fenômeno estrutural.</button><button class="option" data-correct="false">uma crise conjuntural de 2015.</button><button class="option" data-correct="false">um choque externo temporário.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 4 — Crise x concentração','Crise = conjuntura; concentração = estrutura. Elas interagem, mas respondem a perguntas diferentes.')">Salvar síntese</button><button onclick="markReview(4,'Revisar diferença entre conjuntura, estrutura, média e distribuição')">Preciso revisar</button></div>
+`},
+
+{ id:5, title:"Fazenda do mundo", short:"Commodities, valor agregado e risco geopolítico", prereq:"Concentração, modernização do campo e comércio.", next:"Se poucos compradores importam, o que acontece quando China e EUA entram em disputa?", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte III · O Brasil e o mundo</span><span>Capítulo 5</span></div><div class="eyebrow">Produção vira poder</div><h2>O Brasil como “fazenda do mundo”</h2><p class="deck">A expressão pode soar como elogio e crítica ao mesmo tempo. Esse duplo sentido é justamente o que a torna útil.</p></div>
+<div class="reading">
+ <p class="dropcap">O Brasil tem enorme capacidade de produzir alimentos, energia e matérias-primas. Isso gera exportações, divisas, empregos e influência. Mas depender muito de produtos primários e poucos compradores também cria vulnerabilidade.</p>
+ <h3>5.1 Por que o Brasil ocupa esse papel?</h3>
+ <p>A apostila organiza a explicação em três ingredientes: condições naturais combinadas com tecnologia tropical; estrutura fundiária e capital que favoreceram produção em escala; e expansão da demanda externa, especialmente asiática, a partir dos anos 2000.</p>
+ <div class="callout connect"><div class="label">Conexão</div><p>O Capítulo 1 volta aqui: grandes áreas e acesso a capital ajudam a explicar parte da escala exportadora. O Capítulo 3 também volta: modernização técnica tornou o campo altamente produtivo.</p></div>
+ <h3>5.2 O que a pauta exportadora revela</h3>
+ <p>Nos dados de 2025 usados pela apostila, petróleo, soja e minério de ferro somavam cerca de um terço das exportações brasileiras. A China aparecia como destino de 28,7% das exportações.</p>
+ <p>A ideia importante não é decorar uma lista. É perceber <b>concentração de produtos e de compradores</b>. Quanto maior a concentração, maior a sensibilidade a mudanças de preços, demanda ou política externa.</p>
+ <h3>5.3 Valor agregado</h3>
+ <p>Vender soja em grão e vender óleo, farelo, alimentos processados, máquinas agrícolas ou tecnologia não geram o mesmo valor por unidade. Processar significa incorporar trabalho, energia, conhecimento, logística, tecnologia, marca e serviços.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Por que exportar muito não significa automaticamente ter uma economia diversificada?</p><button class="revealbtn" onclick="reveal(this)">Explorar</button><div class="revealed">Porque o volume pode estar concentrado em poucos produtos primários. Uma pauta grande em valor pode continuar vulnerável se depender de poucos itens, compradores ou preços internacionais.</div></div>
+ <h3>5.4 Primarização, desindustrialização e “doença holandesa”</h3>
+ <p>A apostila apresenta o mecanismo clássico: boom de commodities → entrada de divisas → possível valorização cambial → produtos industriais nacionais ficam relativamente mais caros → indústria perde competitividade. Esse encadeamento é associado à chamada <b>doença holandesa</b>.</p>
+ <details class="details"><summary>Ir mais fundo: isso acontece automaticamente?</summary><div class="inside"><p>Não. É um mecanismo econômico possível, não uma lei mecânica. Política cambial, produtividade industrial, infraestrutura, juros, impostos, inovação e condições globais também importam. O conceito ajuda a formular perguntas, não a substituir análise.</p></div></details>
+ 
+<div class="support-card">
+ <div class="support-top"><div><div class="eyebrow">Material de apoio</div><div class="support-title">Conecte o capítulo ao debate em áudio</div></div><button onclick="showView('media')">ouvir debate</button></div>
+ <p>Depois de estudar commodities e valor agregado, volte ao podcast e repare como concentração de terra e escala do agronegócio aparecem como dimensões diferentes do mesmo modelo.</p>
+</div>
+<h3>5.5 Poder e vulnerabilidade</h3>
+ <div class="twocol"><div class="stat"><b>Vantagens</b><p>Peso na segurança alimentar, atração de investimento, bioenergia, capacidade de negociar com vários blocos.</p></div><div class="stat"><b>Riscos</b><p>Dependência de compradores, oscilação de preços, tarifas, exigências ambientais e menor valor agregado.</p></div></div>
+ <div class="quiz" data-id="q5" data-hint="Pense em etapas da cadeia: extração/colheita → processamento → tecnologia → marca."><div class="qtitle">Cheque de compreensão</div><p>“Agregar valor” significa principalmente...</p>
+ <button class="option" data-correct="false">aumentar apenas a quantidade física exportada.</button>
+ <button class="option" data-correct="true">incorporar processamento, tecnologia, trabalho e serviços ao produto.</button>
+ <button class="option" data-correct="false">vender sempre para o mesmo comprador.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 5 — Fazenda do mundo','Força exportadora pode coexistir com vulnerabilidade: poucos produtos/compradores, baixo valor agregado e exposição a preços e decisões externas.')">Salvar síntese</button><button onclick="markReview(5,'Revisar valor agregado, primarização e doença holandesa')">Preciso revisar</button></div>
+`},
+
+{ id:6, title:"China e Estados Unidos", short:"PIB, comércio, tecnologia e os efeitos sobre o Brasil", prereq:"Comércio exterior, commodities e concentração de mercados.", next:"A disputa econômica chega ao ambiente: clima, regras comerciais e uso da terra.", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte III · O Brasil e o mundo</span><span>Capítulo 6</span></div><div class="eyebrow">Geoeconomia</div><h2>China e Estados Unidos: duas réguas, muitas disputas</h2><p class="deck">“Qual é a maior economia?” parece uma pergunta simples. Não é. Antes da resposta, precisamos escolher a régua.</p></div>
+<div class="reading">
+ <h3>6.1 PIB nominal e PPC</h3>
+ <p>No PIB nominal, tudo é convertido para dólar pelo câmbio de mercado. Na <b>paridade do poder de compra (PPC)</b>, ajustamos pelos preços locais: o mesmo serviço pode custar valores muito diferentes em Nova York e Xangai.</p>
+ <div class="callout"><div class="label">Ahhh, então era isso</div><p>PIB nominal ajuda a enxergar peso financeiro internacional; PPC ajuda a comparar volume de produção e consumo ajustado ao custo local. A resposta muda porque a pergunta muda.</p></div>
+ <h3>6.2 Forças diferentes</h3>
+ <p>A apostila destaca o papel do dólar e dos mercados financeiros dos EUA, a liderança tecnológica em várias áreas, e, do lado chinês, a escala manufatureira, exportadora e o peso em setores como baterias, veículos elétricos e refino de terras raras.</p>
+ <h3>6.3 Guerra comercial é mais que tarifa</h3>
+ <p>Tarifas aparecem desde 2018 e voltaram a escalar nos anos seguintes. Mas a disputa inclui semicondutores, inteligência artificial, terras raras, controles de exportação, cadeias produtivas e segurança.</p>
+ <div class="callout error"><div class="label">Erro comum</div><p>Tratar a disputa como uma simples briga por tarifas. Tarifas são apenas uma ferramenta dentro de uma competição tecnológica, industrial, financeira e estratégica.</p></div>
+ <h3>6.4 Como isso chega ao Brasil</h3>
+ <p>Quando China reduz compras de um fornecedor, outro pode ocupar espaço. A apostila usa a soja para mostrar isso: mudanças na relação EUA–China podem redirecionar demanda ao Brasil. O ganho, porém, cria um risco: depender de uma rivalidade externa para sustentar mercado.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Se China e EUA fecharem um grande acordo e parte da soja chinesa voltar aos produtores americanos, o que um Brasil menos vulnerável teria feito antes?</p><button class="revealbtn" onclick="reveal(this)">Explorar estratégia</button><div class="revealed">Diversificar compradores, agregar valor, ampliar processamento local, aumentar produtividade sustentável e construir cadeias menos dependentes de um único destino.</div></div>
+ <h3>6.5 O conceito de geoeconomia</h3>
+ <p><b>Geoeconomia</b> é o uso de instrumentos econômicos — comércio, investimento, crédito, tecnologia, sanções, subsídios — como meios de poder e estratégia internacional. Ela ajuda a conectar economia e geopolítica sem imaginar que toda disputa precise virar conflito militar.</p>
+ <div class="quiz" data-id="q6" data-hint="PIB nominal usa câmbio; PPC ajusta diferenças de preços locais."><div class="qtitle">Cheque de compreensão</div><p>Por que rankings de “maior economia” podem mudar?</p>
+ <button class="option" data-correct="false">Porque os países escondem seus dados.</button>
+ <button class="option" data-correct="true">Porque PIB nominal e PPC medem dimensões diferentes da atividade econômica.</button>
+ <button class="option" data-correct="false">Porque PPC é apenas outro nome para inflação.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 6 — China e EUA','Nominal e PPC respondem a perguntas diferentes; a disputa EUA–China envolve tarifas, tecnologia, insumos e cadeias. Brasil ganha oportunidades e riscos.')">Salvar síntese</button><button onclick="markReview(6,'Revisar PIB nominal, PPC, geoeconomia e efeitos da disputa sobre o Brasil')">Preciso revisar</button></div>
+`},
+
+{ id:7, title:"Desenvolvimento e clima", short:"Quando o uso da terra volta como problema climático", prereq:"Estrutura fundiária, crescimento x distribuição e inserção comercial.", next:"Fechamento: costurar os sete temas numa única explicação.", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Parte III · O Brasil e o mundo</span><span>Capítulo 7</span></div><div class="eyebrow">O circuito se fecha</div><h2>Desenvolvimento econômico e mudanças climáticas</h2><p class="deck">O modelo econômico pressiona o clima. O clima, por sua vez, pressiona o próprio modelo. Aqui, o capítulo 1 reaparece de um jeito inesperado.</p></div>
+<div class="reading">
+ <h3>7.1 Crescimento não é desenvolvimento</h3>
+ <p><b>Crescimento econômico</b> é aumento de produção e renda agregada. <b>Desenvolvimento</b> exige olhar também para qualidade de vida, distribuição, saúde, educação, oportunidades e sustentabilidade.</p>
+ <div class="callout alt"><div class="label">Explicação alternativa</div><p>Se uma cidade dobra o PIB demolindo sua base ambiental e piorando a vida de parte da população, houve crescimento. Chamar isso de desenvolvimento exige uma análise muito mais ampla.</p></div>
+ <h3>7.2 O mecanismo climático</h3>
+ <p>O efeito estufa é natural: gases atmosféricos absorvem e reemitem parte da radiação infravermelha, mantendo o planeta aquecido. O problema é o aumento da concentração desses gases pela ação humana, especialmente combustíveis fósseis, desmatamento e agropecuária em grande escala.</p>
+ <p>Para comparar gases diferentes, usa-se <b>CO₂ equivalente (CO₂e)</b>, convertendo efeitos de aquecimento para uma unidade comum.</p>
+ <h3>7.3 O perfil brasileiro</h3>
+ <p>Na maior parte das grandes economias, energia baseada em combustíveis fósseis lidera as emissões. No Brasil, a apostila destaca um perfil diferente: uso da terra e agropecuária têm peso enorme.</p>
+ <div class="figure"><div class="chartbars">
+  <div class="chartrow"><span>Uso da terra</span><div class="bartrack"><div class="barfill" style="width:42%"></div></div><b>42%</b></div>
+  <div class="chartrow"><span>Agropecuária</span><div class="bartrack"><div class="barfill" style="width:29%"></div></div><b>29%</b></div>
+  <div class="chartrow"><span>Energia</span><div class="bartrack"><div class="barfill" style="width:20%"></div></div><b>20%</b></div>
+  <div class="chartrow"><span>Resíduos</span><div class="bartrack"><div class="barfill" style="width:5%"></div></div><b>5%</b></div>
+  <div class="chartrow"><span>Processos ind.</span><div class="bartrack"><div class="barfill" style="width:4%"></div></div><b>4%</b></div>
+ </div><figcaption>Participações apresentadas na apostila para emissões brutas brasileiras em 2024.</figcaption></div>
+ <div class="callout connect"><div class="label">A grande conexão</div><p>Se uso da terra é parte central das emissões brasileiras, então “quem usa a terra, como usa e com que incentivos” também é uma questão climática. Voltamos ao capítulo 1.</p></div>
+ <h3>7.4 Brutas, líquidas e remoções</h3>
+ <p>Emissões <b>brutas</b> somam o que é emitido. Emissões <b>líquidas</b> descontam remoções de carbono, como absorção por florestas e áreas protegidas. Na apostila, 2,145 Gt brutas e 1,49 Gt líquidas implicam cerca de 0,655 Gt removidas.</p>
+ <h3>7.5 O clima cobra de volta</h3>
+ <p>Secas, enchentes, calor extremo e mudanças no calendário de chuvas afetam agricultura, transporte, infraestrutura e cidades. Por isso, “desenvolvimento versus ambiente” pode ser uma falsa oposição: degradar o ambiente pode aumentar o risco econômico do próprio setor produtivo.</p>
+ <h3>7.6 Respostas e justiça climática</h3>
+ <p>A apostila conecta Acordo de Paris, mercado de carbono, práticas agrícolas de baixo carbono e exigências comerciais ligadas ao desmatamento. Também introduz <b>justiça climática</b>: responsabilidades e impactos são distribuídos de forma desigual entre países, setores e grupos sociais.</p>
+ <div class="callout think"><div class="label">Pare e pense</div><p>Quem tem mais capacidade de se adaptar a uma seca severa: um grande produtor capitalizado ou uma família rural com baixa reserva? O evento climático é o mesmo; a vulnerabilidade é?</p><button class="revealbtn" onclick="reveal(this)">Explorar</button><div class="revealed">Não. Capacidade de adaptação depende de renda, crédito, seguro, tecnologia, infraestrutura e redes de proteção. Clima também revela concentração e desigualdade.</div></div>
+ <div class="quiz" data-id="q7" data-hint="Observe quais setores lideram a tabela da apostila."><div class="qtitle">Cheque de compreensão</div><p>O que torna o perfil brasileiro de emissões particular?</p>
+ <button class="option" data-correct="false">A eletricidade a carvão domina as emissões brasileiras.</button>
+ <button class="option" data-correct="true">Uso da terra e agropecuária têm participação muito alta nas emissões.</button>
+ <button class="option" data-correct="false">O Brasil não possui emissões relevantes porque sua eletricidade tem renováveis.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 7 — Desenvolvimento e clima','No Brasil, uso da terra e agropecuária são centrais nas emissões; clima afeta o próprio campo e revela desigualdade de capacidade de adaptação.')">Salvar síntese</button><button onclick="markReview(7,'Revisar crescimento x desenvolvimento, CO₂e, emissões brutas/líquidas e justiça climática')">Preciso revisar</button></div>
+`},
+
+{ id:8, title:"Costurando tudo", short:"Sete temas, uma única história", prereq:"Os sete capítulos anteriores.", next:"Revisão final e prática no Laboratório.", content: `
+<div class="chapter-head"><div class="breadcrumb"><span>Fechamento</span><span>Capítulo 8</span></div><div class="eyebrow">Síntese</div><h2>Sete temas, uma história</h2><p class="deck">Você não precisa memorizar sete blocos. Precisa enxergar o fio que os conecta.</p></div>
+<div class="reading">
+ <p class="dropcap">O Brasil herdou uma estrutura fundiária concentrada. A reforma agrária surge como resposta institucional a esse desenho. O campo se moderniza, mas sem transformar a propriedade na mesma velocidade; parte da população migra para as cidades. O agronegócio ganha escala e o país amplia o papel de exportador de commodities. Isso o aproxima ainda mais da dinâmica China–EUA. E o uso da terra volta como questão climática.</p>
+ <div class="figure"><div style="display:grid;gap:10px">
+  <div class="stat"><b>1. Estrutura fundiária</b><p>terra concentrada</p></div>
+  <div style="text-align:center">↓</div><div class="stat"><b>2. Reforma agrária</b><p>tentativa de corrigir acesso e função social</p></div>
+  <div style="text-align:center">↓</div><div class="stat"><b>3. Êxodo + modernização</b><p>menos gente no campo, mais escala produtiva</p></div>
+  <div style="text-align:center">↓</div><div class="stat"><b>4–5. Concentração + fazenda do mundo</b><p>produção e comércio ganham escala, mas também dependências</p></div>
+  <div style="text-align:center">↓</div><div class="stat"><b>6. China e EUA</b><p>compradores, tecnologia e disputa geoeconômica</p></div>
+  <div style="text-align:center">↓</div><div class="stat"><b>7. Clima</b><p>o uso da terra gera pressão ambiental; o clima devolve pressão econômica</p></div>
+ </div><figcaption>O fio condutor é a diferença entre estruturas persistentes e choques conjunturais, e como terra, renda e poder se distribuem.</figcaption></div>
+ 
+<div class="support-card">
+ <div class="support-top"><div><div class="eyebrow">Revisão audiovisual</div><div class="support-title">Assista à videoaula Brasil: Terra, Poder e Mundo</div></div><button onclick="showView('media')">abrir videoaula</button></div>
+ <p>Use a videoaula como revisão depois da primeira leitura. Ao terminar, tente reconstruir de memória a cadeia terra → reforma → êxodo → exportação → geopolítica → clima.</p>
+</div>
+<h3>8.1 A técnica dos três níveis</h3>
+ <p>Para testar compreensão, explique cada tema em três níveis: para uma criança de dez anos (analogia), para um colega (linguagem de aula) e para um professor (conceitos, dados e conexões). Se você consegue mudar o nível sem perder a ideia, aprendeu de verdade.</p>
+ <div class="callout think"><div class="label">Desafio final</div><p>Explique em até seis linhas: <b>como o Brasil pode ser grande exportador de alimentos e, ao mesmo tempo, manter forte concentração fundiária?</b></p><button class="revealbtn" onclick="reveal(this)">Ver critérios de uma boa resposta</button><div class="revealed">Uma boa resposta separa produtividade de distribuição, menciona a herança histórica da propriedade, a modernização em escala e deixa claro que exportar muito não implica acesso igual à terra.</div></div>
+ <h3>8.2 O que precisa estar na ponta da língua</h3>
+ <div class="twocol">
+  <div class="stat"><b>Conceitos</b><p>estrutura fundiária, módulo fiscal, função social, reforma agrária, modernização conservadora, conjuntura, estrutura, commodities, valor agregado, PPC, CO₂e.</p></div>
+  <div class="stat"><b>Conexões</b><p>terra → reforma → êxodo → escala produtiva → exportação → geopolítica → clima → terra.</p></div>
+ </div>
+ <div class="quiz" data-id="q8" data-hint="Qual alternativa mostra uma sequência de causa e consequência em vez de tópicos isolados?"><div class="qtitle">Cheque integrador</div><p>Qual encadeamento melhor representa a lógica da obra?</p>
+ <button class="option" data-correct="false">Clima → módulo fiscal → tarifas → êxodo, sem relação entre os conceitos.</button>
+ <button class="option" data-correct="true">Estrutura da terra → respostas e migração → modernização e exportação → geopolítica → pressão climática sobre o próprio modelo.</button>
+ <button class="option" data-correct="false">PIB → sesmarias → efeito estufa → urbanização, apenas por ordem cronológica.</button><div class="hint"></div><div class="feedback"></div></div>
+</div>
+<div class="note-tools"><button onclick="saveSnippet('Cap. 8 — Síntese','Terra → reforma → êxodo/modernização → commodities → China/EUA → clima. O fio condutor é concentração, poder e vulnerabilidade.')">Salvar síntese final</button><button onclick="markReview(8,'Refazer a explicação integradora dos sete temas')">Preciso revisar</button></div>
+`}
+];
+
+const statusOrder=["unseen","read","practice","mastered","review"];
+const statusLabel={unseen:"Não visto",read:"Lido",practice:"Praticado",mastered:"Compreendido",review:"Revisar"};
+let state=JSON.parse(localStorage.getItem("geolab-state-v3")||'{"status":{},"errors":[],"saved":[],"current":1}');
+for(const c of chapters) if(!state.status[c.id]) state.status[c.id]="unseen";
+
+function persist(){ localStorage.setItem("geolab-state-v3",JSON.stringify(state)); updateProgress(); renderToc(); renderLibrary(); updateRail(); renderNotebook(); }
+function statusClass(s){return s==="read"?"read":s==="practice"?"practice":s==="mastered"?"mastered":s==="review"?"review":""}
+
+const book=document.getElementById("book");
+chapters.forEach(c=>{
+ const article=document.createElement("article"); article.className="chapter"; article.dataset.chapter=c.id;
+ article.innerHTML=c.content+`<div class="chapter-footer"><button class="btn" onclick="openChapter(${Math.max(1,c.id-1)})">← anterior</button><button class="masterbtn" onclick="markMastered(${c.id})">Marcar como compreendido</button><button class="btn" onclick="openChapter(${Math.min(chapters.length,c.id+1)})">próximo →</button></div>`;
+ book.appendChild(article);
+});
+
+function renderToc(){
+ const containers=[document.getElementById("toc"),document.getElementById("mobileTocNav")];
+ containers.forEach(nav=>{
+  nav.innerHTML="";
+  chapters.forEach(c=>{
+   const b=document.createElement("button"); b.className=state.current===c.id?"active":"";
+   b.innerHTML=`<span class="num">${c.id}</span><span><span class="title"><i class="statusdot ${statusClass(state.status[c.id])}"></i>${c.title}</span><small>${c.short}</small></span>`;
+   b.onclick=()=>{openChapter(c.id);document.getElementById("mobileToc").classList.remove("show")};
+   nav.appendChild(b);
+  });
+ });
+}
+function openChapter(id){
+ state.current=id;
+ if(state.status[id]==="unseen") state.status[id]="read";
+ document.getElementById("hero").style.display="none";
+ document.querySelectorAll(".chapter").forEach(x=>x.classList.toggle("active",+x.dataset.chapter===id));
+ showView("read",false);
+ window.scrollTo({top:60,behavior:"smooth"});
+ persist();
+}
+function markMastered(id){state.status[id]="mastered";persist();updateRail();}
+function cycleStatus(){
+ const id=state.current,s=state.status[id],idx=statusOrder.indexOf(s);
+ state.status[id]=statusOrder[(idx+1)%statusOrder.length];persist();
+}
+document.getElementById("statusCycle").onclick=cycleStatus;
+
+function updateRail(){
+ const c=chapters.find(x=>x.id===state.current)||chapters[0];
+ document.getElementById("whereText").textContent=`Capítulo ${c.id} · ${c.title}`;
+ document.getElementById("statusText").textContent=statusLabel[state.status[c.id]];
+ document.getElementById("prereqText").textContent=c.prereq;
+ document.getElementById("nextText").textContent=c.next;
+ document.getElementById("prereqBtn").onclick=()=>openChapter(Math.max(1,c.id-1));
+}
+function updateProgress(){
+ const scores={unseen:0,read:.25,practice:.55,mastered:1,review:.4};
+ const total=chapters.reduce((a,c)=>a+scores[state.status[c.id]],0)/chapters.length*100;
+ document.getElementById("topProg").style.width=total.toFixed(0)+"%";
+ document.getElementById("topProgText").textContent=total.toFixed(0)+"%";
+}
+function renderLibrary(){
+ const grid=document.getElementById("libraryGrid");grid.innerHTML="";
+ chapters.forEach(c=>{
+  const d=document.createElement("div");d.className="libcard";
+  d.innerHTML=`<div class="eyebrow">Capítulo ${c.id}</div><h3>${c.title}</h3><p>${c.short}</p><p><i class="statusdot ${statusClass(state.status[c.id])}"></i><b>${statusLabel[state.status[c.id]]}</b></p>`;
+  d.onclick=()=>openChapter(c.id);grid.appendChild(d);
+ });
+}
+function reveal(btn){btn.nextElementSibling.classList.add("show");btn.disabled=true;btn.textContent="Explicação revelada"}
+window.reveal=reveal;
+
+document.addEventListener("click",e=>{
+ const opt=e.target.closest(".option"); if(!opt)return;
+ const q=opt.closest(".quiz"); if(q.dataset.locked==="1")return;
+ let tries=+(q.dataset.tries||0); const correct=opt.dataset.correct==="true";
+ const hint=q.querySelector(".hint"), fb=q.querySelector(".feedback");
+ if(correct){
+   opt.classList.add("correct"); fb.innerHTML="<b>Boa.</b> Agora tente explicar por que as outras alternativas falham."; q.dataset.locked="1";
+   state.status[state.current]=state.status[state.current]==="mastered"?"mastered":"practice"; persist();
+ }else{
+   tries++;q.dataset.tries=tries;opt.classList.add("wrong");
+   if(tries===1){hint.style.display="block";hint.textContent="Pista: "+q.dataset.hint;fb.textContent="Ainda não. Não vou entregar a resposta — use a pista e tente de novo."}
+   else{
+     const c=q.querySelector('[data-correct="true"]');c.classList.add("correct");
+     fb.textContent="Agora compare sua escolha com a correta. Descubra qual palavra ou relação mudou o sentido.";
+     state.errors.unshift({chapter:state.current,question:q.dataset.id,when:new Date().toLocaleDateString("pt-BR")});
+     state.status[state.current]="review";q.dataset.locked="1";persist();
+   }
+ }
+});
+
+function saveSnippet(title,text){state.saved.unshift({title,text});persist();alert("Salvo no Caderno.");}
+function markReview(id,text){state.status[id]="review";state.saved.unshift({title:"Revisar",text});persist();}
+function quickNote(){showView("notebook");setTimeout(()=>document.getElementById("notes").focus(),100);}
+function saveNotes(){localStorage.setItem("geolab-notes-v3",document.getElementById("notes").value);alert("Caderno salvo.");}
+document.getElementById("notes").value=localStorage.getItem("geolab-notes-v3")||"";
+function renderNotebook(){
+ const r=document.getElementById("reviewList"),e=document.getElementById("errorList");
+ const reviews=chapters.filter(c=>state.status[c.id]==="review");
+ r.innerHTML=reviews.length?reviews.map(c=>`<div class="saved-item"><b>Cap. ${c.id} · ${c.title}</b><br><small>${c.short}</small></div>`).join(""):'<p style="color:var(--muted)">Nada marcado para revisão.</p>';
+ e.innerHTML=state.errors.length?state.errors.slice(0,8).map(x=>`<div class="saved-item"><b>Cap. ${x.chapter}</b> · questão ${x.question}<br><small>${x.when}</small></div>`).join(""):'<p style="color:var(--muted)">Nenhum erro registrado ainda.</p>';
+ if(state.saved.length){r.innerHTML+=`<h4>Ideias salvas</h4>`+state.saved.slice(0,8).map(x=>`<div class="saved-item"><b>${x.title}</b><br><small>${x.text}</small></div>`).join("")}
+}
+function showView(view,scroll=true){
+ const read=document.getElementById("readView"), map={library:"libraryView",lab:"labView",media:"mediaView",notebook:"notebookView"};
+ read.style.display=view==="read"?"grid":"none";
+ Object.entries(map).forEach(([k,id])=>document.getElementById(id).classList.toggle("active",k===view));
+ document.querySelectorAll(".viewbtn").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ document.querySelectorAll("[data-mview]").forEach(b=>b.classList.toggle("active",b.dataset.mview===view));
+ if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+window.showView=showView;
+document.querySelectorAll(".viewbtn").forEach(b=>b.onclick=()=>showView(b.dataset.view));
+document.querySelectorAll("[data-mview]").forEach(b=>b.onclick=()=>showView(b.dataset.mview));
+
+// labs
+const labs=document.getElementById("labs");
+labs.innerHTML=`
+<div class="labcard">
+ <div class="labhead"><div><div class="eyebrow">Experimento 1</div><h3>Concentração de terra</h3><p>Transforme um percentual abstrato numa paisagem visível.</p></div><button class="btn" onclick="openChapter(1)">ver teoria</button></div>
+ <div class="control"><label>Parcela da área controlada pelo grupo dominante: <b><span id="landV">48</span>%</b></label><input id="landR" type="range" min="5" max="95" value="48"></div>
+ <div class="landgrid" id="landGrid"></div><p id="landMsg"></p>
+</div>
+<div class="labcard">
+ <div class="labhead"><div><div class="eyebrow">Experimento 2</div><h3>Tarifas e preço de entrada</h3><p>Veja por que uma tarifa muito alta pode funcionar quase como bloqueio comercial.</p></div><button class="btn" onclick="openChapter(6)">ver teoria</button></div>
+ <div class="twocol"><div class="control"><label>Preço original: US$ <span id="priceV">100</span></label><input id="priceR" type="range" min="20" max="500" value="100"></div><div class="control"><label>Tarifa: <span id="tariffV">30</span>%</label><input id="tariffR" type="range" min="0" max="160" value="30"></div></div>
+ <div class="metricgrid"><div class="metric"><small>Preço original</small><b id="mOriginal">$100</b></div><div class="metric"><small>Tarifa</small><b id="mTariff">$30</b></div><div class="metric"><small>Preço de entrada</small><b id="mFinal">$130</b></div></div>
+</div>
+<div class="labcard">
+ <div class="labhead"><div><div class="eyebrow">Experimento 3</div><h3>Emissões: bruto, remoções e líquido</h3><p>Construa a relação usada no capítulo climático.</p></div><button class="btn" onclick="openChapter(7)">ver teoria</button></div>
+ <div class="control"><label>Emissões brutas: <span id="grossV">2.145</span> Gt CO₂e</label><input id="grossR" type="range" min="1000" max="3000" value="2145"></div>
+ <div class="control"><label>Remoções: <span id="remV">0.655</span> Gt CO₂e</label><input id="remR" type="range" min="0" max="1200" value="655"></div>
+ <div class="metricgrid"><div class="metric"><small>Brutas</small><b id="grossM">2.145</b></div><div class="metric"><small>Remoções</small><b id="remM">0.655</b></div><div class="metric"><small>Líquidas</small><b id="netM">1.490</b></div></div>
+</div>
+<div class="labcard">
+ <div class="labhead"><div><div class="eyebrow">Experimento 4</div><h3>Dependência de um comprador</h3><p>Simule uma queda nas compras de um parceiro que representa grande parcela das exportações.</p></div><button class="btn" onclick="openChapter(5)">ver teoria</button></div>
+ <div class="twocol"><div class="control"><label>Participação do comprador: <span id="shareV">28.7</span>%</label><input id="shareR" type="range" min="5" max="60" value="28.7" step=".1"></div><div class="control"><label>Queda nas compras: <span id="dropV">20</span>%</label><input id="dropR" type="range" min="0" max="100" value="20"></div></div>
+ <div class="metricgrid"><div class="metric"><small>Participação</small><b id="shareM">28.7%</b></div><div class="metric"><small>Queda</small><b id="dropM">20%</b></div><div class="metric"><small>Impacto no total</small><b id="impactM">5.7 p.p.</b></div></div>
+</div>`;
+
+const lg=document.getElementById("landGrid");for(let i=0;i<100;i++){let s=document.createElement("span");lg.appendChild(s)}
+function updateLand(){let v=+document.getElementById("landR").value;document.getElementById("landV").textContent=v;[...lg.children].forEach((x,i)=>x.classList.toggle("on",i<v));document.getElementById("landMsg").textContent=v<30?"Neste cenário, o grupo dominante controla uma parcela relativamente menor.":v<60?"Aqui já existe uma assimetria forte: uma minoria controla grande parte do recurso.":"A concentração domina o sistema: poucas unidades controlam a maior parte da área."}
+document.getElementById("landR").oninput=updateLand;updateLand();
+
+function updateTariff(){let p=+priceR.value,t=+tariffR.value;priceV.textContent=p;tariffV.textContent=t;mOriginal.textContent="$"+p.toFixed(0);mTariff.textContent="$"+(p*t/100).toFixed(0);mFinal.textContent="$"+(p*(1+t/100)).toFixed(0)}
+priceR.oninput=tariffR.oninput=updateTariff;updateTariff();
+
+function updateEmission(){let g=+grossR.value/1000,r=+remR.value/1000;grossV.textContent=g.toFixed(3);remV.textContent=r.toFixed(3);grossM.textContent=g.toFixed(3);remM.textContent=r.toFixed(3);netM.textContent=Math.max(0,g-r).toFixed(3)}
+grossR.oninput=remR.oninput=updateEmission;updateEmission();
+
+function updateDep(){let s=+shareR.value,d=+dropR.value;shareV.textContent=s.toFixed(1);dropV.textContent=d;shareM.textContent=s.toFixed(1)+"%";dropM.textContent=d+"%";impactM.textContent=(s*d/100).toFixed(1)+" p.p."}
+shareR.oninput=dropR.oninput=updateDep;updateDep();
+
+document.getElementById("themeBtn").onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"":"dark";localStorage.setItem("geolab-theme-v3",document.documentElement.dataset.theme)};
+document.documentElement.dataset.theme=localStorage.getItem("geolab-theme-v3")||"";
+document.getElementById("focusBtn").onclick=()=>document.body.classList.toggle("focus");
+
+function init(){
+ renderToc();renderLibrary();renderNotebook();updateProgress();updateRail();
+ if(state.current && state.status[state.current]!=="unseen") openChapter(state.current);
+ else document.querySelectorAll(".chapter").forEach(x=>x.classList.remove("active"));
+}
+init();
+</script>
+</body>
+</html>
